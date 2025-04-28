@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Wylosuj sobie Marię na dziś</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 30px;
+            background: radial-gradient(circle,rgba(237, 211, 242, 1) 1%, rgba(221, 146, 240, 1) 50%, rgba(155, 11, 222, 1) 100%);
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 20px;
+            margin-top: 20px;
+            cursor: pointer;
+            background-color: #b264e6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #462380;
+        }
+        img {
+            margin-top: 20px;
+            width: 300px;
+            max-width: 90%;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            animation: fadeIn 1s ease;
+        }
+        #wynik {
+            margin-top: 30px;
+            font-size: 24px;
+        }
+        #szanse {
+            margin-top: 40px;
+            font-size: 18px;
+            text-align: left;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            background: rgba(255, 255, 255, 0.6);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        #szanse ul {
+            list-style: none;
+            padding: 0;
+        }
+        #szanse li {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 10px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+        .procent {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        .szansa-po {
+            margin-top: 10px;
+            font-size: 20px;
+            color: #555;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .losowanie {
+            font-size: 26px;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🎲 Wylosuj sobie Marię na dziś 🎲</h1>
+    <button onclick="losuj()">Losuj Marię</button>
+
+    <div id="wynik"></div>
+
+    <div id="szanse"></div>
+
+    <script>
+    const humory = {
+        1: { tekst: "Naczelny chill guy Maria 🌞", obrazek: "chillguy1.jpg" },
+        2: { tekst: "Maria buble ti 🧋", obrazek: "buble.jpg" },
+        3: { tekst: "Wkurzona Maria 😡", obrazek: "fakju1.jpg" },
+        4: { tekst: "Spragniona Maria 💦", obrazek: "picie.jpg" },
+        5: { tekst: "Chill guy z krwi i kości Maria ✨", obrazek: "chillguy2.jpg" },
+        6: { tekst: "Maria jeszcze bardziej wkurzona 🤬", obrazek: "fakju2.jpg" },
+        7: { tekst: "Maria japidi 🐈", obrazek: "japidi.jpg" },
+        8: { tekst: "Szczęśliwe dziecko Maria 😄", obrazek: "kidos.jpg" },
+        9: { tekst: "Princessa Maria 👑", obrazek: "princepolo.jpg" },
+        10: { tekst: "Ulubiony kwiatek 💐", obrazek: "flower.jpg" },
+        11: { tekst: "Mega Sigmusia 🔥🔥🔥", obrazek: "sigmusia.jpg" }
+    };
+
+    const szanse = {
+        1: 22,
+        2: 18,
+        3: 14,
+        4: 10,
+        5: 8,
+        6: 7,
+        7: 6,
+        8: 5,
+        9: 4,
+        10: 3,
+        11: 3
+    };
+
+    function losuj() {
+        document.getElementById('wynik').innerHTML = `<div class="losowanie">Losowanie...</div>`;
+
+        setTimeout(() => {
+            const liczby = [];
+            for (let liczba = 1; liczba <= 11; liczba++) {
+                for (let i = 0; i < szanse[liczba]; i++) {
+                    liczby.push(liczba);
+                }
+            }
+            const wylosowana = liczby[Math.floor(Math.random() * liczby.length)];
+            const humor = humory[wylosowana];
+            const szansa = szanse[wylosowana];
+
+            if (!humor) {
+                document.getElementById('wynik').innerHTML = "<p>Ups, coś poszło nie tak!</p>";
+                return;
+            }
+
+            document.getElementById('wynik').innerHTML = `
+                <h2>${humor.tekst}</h2>
+                ${humor.obrazek ? `<img src="${humor.obrazek}" alt="Humor">` : ''}
+                <div class="szansa-po">Szansa: ${szansa}%</div>
+            `;
+
+            konfettiNaPodstawieSzansy(szansa);
+        }, 1500);
+    }
+
+    function wyswietlSzanse() {
+        let tekst = "<h2>Szanse na każdą Marię:</h2><ul>";
+        for (let liczba = 1; liczba <= 11; liczba++) {
+            const humor = humory[liczba];
+            tekst += `
+                <li>
+                    <span>${humor.tekst}</span>
+                    <span class="procent">${szanse[liczba]}%</span>
+                </li>`;
+        }
+        tekst += "</ul>";
+        document.getElementById('szanse').innerHTML = tekst;
+    }
+
+    function konfettiNaPodstawieSzansy(szansa) {
+        let ilosc = 100; // domyślnie
+        let kolor = '#00f'; // domyślny kolor
+
+        if (szansa <= 5) {
+            ilosc = 300; kolor = '#ff00ff'; // bardzo rzadkie - duże konfetti i kolor fioletowy
+        } else if (szansa <= 10) {
+            ilosc = 200; kolor = '#ff6600'; // rzadkie - więcej konfetti i kolor pomarańczowy
+        } else if (szansa <= 20) {
+            ilosc = 150; kolor = '#00cc00'; // średnie - zielony
+        }
+
+        for (let i = 0; i < ilosc; i++) {
+            const konf = document.createElement('div');
+            konf.style.position = 'fixed';
+            konf.style.top = Math.random() * window.innerHeight + 'px';
+            konf.style.left = Math.random() * window.innerWidth + 'px';
+            konf.style.width = '8px';
+            konf.style.height = '8px';
+            konf.style.backgroundColor = kolor;
+            konf.style.opacity = 0.8;
+            konf.style.zIndex = 1000;
+            konf.style.transition = 'all 3s ease-out';
+            document.body.appendChild(konf);
+
+            setTimeout(() => {
+                konf.style.top = (parseFloat(konf.style.top) + 300) + 'px';
+                konf.style.opacity = 0;
+                konf.style.transform = 'rotate(720deg)';
+            }, 100);
+
+            setTimeout(() => {
+                konf.remove();
+            }, 3000);
+        }
+    }
+
+    wyswietlSzanse();
+    </script>
+
+</body>
+</html>
